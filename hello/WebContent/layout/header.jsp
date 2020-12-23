@@ -25,5 +25,5 @@
 	<li><a href="<%=contextPath%>/board?gubun=deleteOne">게시글삭제하기</a></li>
 	<li><a href="<%=contextPath%>/board?gubun=insertOne">게시글입력하기</a></li>
 	<li><a href="<%=contextPath%>/board?gubun=selectAll">게시글전체보기</a></li>
-	<li><a href="/hello/board?gubun=updateOne">게시글수정하기</a></li>
+	<li><a href="<%=contextPath%>">게시글수정하기</a></li>
 </ul>
