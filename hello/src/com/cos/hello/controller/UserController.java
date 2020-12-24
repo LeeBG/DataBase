@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cos.hello.config.DBConn;
+import com.cos.hello.dao.UsersDao;
 import com.cos.hello.model.Users;
 
 //javax로 시작하는 패키지를 톰켓이 들고 있는 라이브러리
+//디스패쳐의 역할  = 분기 = 필요한 VIEW를 응답해주는것 
 public class UserController extends HttpServlet {
 	// request.getParameter == request에 있는데이터를 파싱해준다.
 
@@ -90,34 +92,26 @@ public class UserController extends HttpServlet {
 			String password = request.getParameter("password");
 			String email = request.getParameter("email");
 
-			System.out.println("=========JoinProc Start==========");
-			System.out.println(username);
-			System.out.println(password);
-			System.out.println(email);
-			System.out.println("=========JoinProc End==========");
+//			System.out.println("=========JoinProc Start==========");
+//			System.out.println(username);
+//			System.out.println(password);
+//			System.out.println(email);
+//			System.out.println("=========JoinProc End==========");
 			// 2번 데이터베이스에 연결해서 저 세가지를 insert해야한다.
+			Users user = Users.builder()
+					.username(username)
+					.password(password)
+					.email(email)
+					.build();
 			
-			StringBuffer sb = new StringBuffer();	//String전용 컬렉션: 장점 동기화 돼있다(해당 reference 주소에 동시접근x)
-			sb.append("INSERT INTO users(username,password,email)");
-			sb.append("VALUES(?,?,?)");
-			String sql = sb.toString();
-			Connection conn = DBConn.getInstance();	//커넥션을 얻음 선에 접근가능
-			try {
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1,username);
-				pstmt.setString(2,password);
-				pstmt.setString(3,email);
-				int result = pstmt.executeUpdate();	//변경된 행의 갯수를 리턴, DML문장은 모두 update
-				if(result==1) {
-					// 3번 insert가 정상적으로 되었다면 index.jsp를 응답.
-					response.sendRedirect("auth/login.jsp");
-				}else {
-					response.sendRedirect("auth/join.jsp");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
+			UsersDao usersdao = new UsersDao();
+			int result = usersdao.insert(user);
+			if(result==1) {
+				// 3번 insert가 정상적으로 되었다면 index.jsp를 응답.
+				response.sendRedirect("auth/login.jsp");
+			}else {
+				response.sendRedirect("auth/join.jsp");
+			}			
 			//DAO만들어서 깔끔하게 처리하기
 		} else if (gubun.equals("loginProc")) {
 			String username = request.getParameter("username");
