@@ -1,6 +1,9 @@
 package com.cos.hello.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.RequestDispatcher;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.cos.hello.config.DBConn;
 import com.cos.hello.model.Users;
 
 //javax로 시작하는 패키지를 톰켓이 들고 있는 라이브러리
@@ -73,7 +77,7 @@ public class UserController extends HttpServlet {
 
 		} else if (gubun.equals("updateOne")) {
 			response.sendRedirect("user/updateOne.jsp");
-		} else if (gubun.equals("joinProc")) {
+		} else if (gubun.equals("joinProc")) {	//회원가입 수행해줘
 			// 데이터 원형 : username=ssar&password=1234&email=ssar@nate.com
 
 			// 1번 form의 input태그에 있는 세가지 값 username, password, email을 받기
@@ -92,11 +96,29 @@ public class UserController extends HttpServlet {
 			System.out.println(email);
 			System.out.println("=========JoinProc End==========");
 			// 2번 데이터베이스에 연결해서 저 세가지를 insert해야한다.
-			// 생략
+			
+			StringBuffer sb = new StringBuffer();	//String전용 컬렉션: 장점 동기화 돼있다(해당 reference 주소에 동시접근x)
+			sb.append("INSERT INTO users(username,password,email)");
+			sb.append("VALUES(?,?,?)");
+			String sql = sb.toString();
+			Connection conn = DBConn.getInstance();	//커넥션을 얻음 선에 접근가능
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1,username);
+				pstmt.setString(2,password);
+				pstmt.setString(3,email);
+				int result = pstmt.executeUpdate();	//변경된 행의 갯수를 리턴, DML문장은 모두 update
+				if(result==1) {
+					// 3번 insert가 정상적으로 되었다면 index.jsp를 응답.
+					response.sendRedirect("auth/login.jsp");
+				}else {
+					response.sendRedirect("auth/join.jsp");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			//DAO만들어서 깔끔하게 처리하기
-
-			// 3번 insert가 정상적으로 되었다면 index.jsp를 응답.
-			response.sendRedirect("index.jsp");
 		} else if (gubun.equals("loginProc")) {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
