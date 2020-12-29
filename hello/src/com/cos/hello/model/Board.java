@@ -13,5 +13,5 @@ public class Board {
 	private int id;
 	private String title;
 	private String content;
-	private int userid;		//fk 제약조건
+	private int userid; // fk 제약조건
 }

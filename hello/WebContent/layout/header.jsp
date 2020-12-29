@@ -2,13 +2,13 @@
 <%@page import="java.io.BufferedWriter"%>
 <%@page import="java.io.OutputStreamWriter"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%
+	pageEncoding="UTF-8"%>
+<%
     	//절대 경로의 단점을 보완할 수 있다.
     	String contextPath = request.getContextPath();
     	out.println(contextPath);
     %>
-    <%=contextPath%>
+<%=contextPath%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,14 +16,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>URL 방식 안됨!! URL 방식으로 요청하기!!!!</h1>
-<ul>
-	<li><a href="<%=contextPath%>/user?gubun=login">로그인</a></li>
-	<li><a href="<%=contextPath%>/user?gubun=join">회원가입</a></li>
-	<li><a href="<%=contextPath%>/user?gubun=selectOne">유저정보보기</a></li>
-	<li><a href="<%=contextPath%>/user?gubun=updateOne">유저수정하기</a></li>
-	<li><a href="<%=contextPath%>/board?gubun=deleteOne">게시글삭제하기</a></li>
-	<li><a href="<%=contextPath%>/board?gubun=insertOne">게시글입력하기</a></li>
-	<li><a href="<%=contextPath%>/board?gubun=selectAll">게시글전체보기</a></li>
-	<li><a href="<%=contextPath%>">게시글수정하기</a></li>
-</ul>
+	<h1>URL 방식 안됨!! URL 방식으로 요청하기!!!!</h1>
+	<ul>
+		<li><a href="<%=contextPath%>/user?gubun=login">로그인</a></li>
+		<li><a href="<%=contextPath%>/user?gubun=join">회원가입</a></li>
+		<li><a href="<%=contextPath%>/user?gubun=selectOne">유저정보보기</a></li>
+		<li><a href="<%=contextPath%>/user?gubun=updateOne">유저수정하기</a></li>
+		<li><a href="<%=contextPath%>/board?gubun=deleteOne">게시글삭제하기</a></li>
+		<li><a href="<%=contextPath%>/board?gubun=insertOne">게시글입력하기</a></li>
+		<li><a href="<%=contextPath%>/board?gubun=selectAll">게시글전체보기</a></li>
+		<li><a href="<%=contextPath%>">게시글수정하기</a></li>
+	</ul>

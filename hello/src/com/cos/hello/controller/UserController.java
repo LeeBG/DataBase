@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import com.cos.hello.config.DBConn;
 import com.cos.hello.dao.UsersDao;
 import com.cos.hello.model.Users;
+import com.cos.hello.service.UsersService;
 
 //javax로 시작하는 패키지를 톰켓이 들고 있는 라이브러리
 //디스패쳐의 역할  = 분기 = 필요한 VIEW를 응답해주는것 
@@ -53,84 +54,24 @@ public class UserController extends HttpServlet {
 
 	private void route(String gubun, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		UsersService usersService = new UsersService();
 		if (gubun.equals("login")) {
 			response.sendRedirect("auth/login.jsp"); // request를 하면 한번 더 req를 한다.
 		} else if (gubun.equals("join")) {
 			response.sendRedirect("auth/join.jsp"); // request를 하면 한번 더 req를 한다.
 		} else if (gubun.equals("selectOne")) {
-			// 유저 정보 보기
-			// 인증이 필요한 페이지
-			String result;
-			HttpSession session = request.getSession();
-			if (session.getAttribute("sessionUser") != null) {// 인증 끝
-				Users user = (Users) session.getAttribute("sessionUser");
-				result = "인증되었습니다.";
-				System.out.println(user);
-			} else {
-				result = "인증되지 않았습니다.";
-			}
-			request.setAttribute("result", result);
-			
-			//request유지기법
-			RequestDispatcher dis = request.getRequestDispatcher("user/selectOne.jsp");
-			dis.forward(request, response);	//데이터를 뿌림
-
-//			response.sendRedirect("user/selectOne.jsp");
-
+			usersService.유저정보보기(request, response);
 		} else if (gubun.equals("updateOne")) {
-			response.sendRedirect("user/updateOne.jsp");
-		} else if (gubun.equals("joinProc")) {	//회원가입 수행해줘
-			// 데이터 원형 : username=ssar&password=1234&email=ssar@nate.com
-
-			// 1번 form의 input태그에 있는 세가지 값 username, password, email을 받기
-
-			// request.getParameter == request에 있는데이터를 파싱해준다.
-
-			// 단 POST방식에서는 데이터타입이 x-www-form-urlencoded 방식만 받을 수 있음.
-
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			String email = request.getParameter("email");
-
-//			System.out.println("=========JoinProc Start==========");
-//			System.out.println(username);
-//			System.out.println(password);
-//			System.out.println(email);
-//			System.out.println("=========JoinProc End==========");
-			// 2번 데이터베이스에 연결해서 저 세가지를 insert해야한다.
-			Users user = Users.builder()
-					.username(username)
-					.password(password)
-					.email(email)
-					.build();
-			
-			UsersDao usersdao = new UsersDao();
-			int result = usersdao.insert(user);
-			if(result==1) {
-				// 3번 insert가 정상적으로 되었다면 index.jsp를 응답.
-				response.sendRedirect("auth/login.jsp");
-			}else {
-				response.sendRedirect("auth/join.jsp");
-			}			
-			//DAO만들어서 깔끔하게 처리하기
+			usersService.유저정보수정페이지(request, response);
+		} else if (gubun.equals("joinProc")) { // 회원가입 수행해줘
+			usersService.회원가입(request, response);
+			// DAO만들어서 깔끔하게 처리하기
 		} else if (gubun.equals("loginProc")) {
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			System.out.println("========loginProc Start=======");
-			System.out.println(username);
-			System.out.println(password);
-			System.out.println("========loginProc End=======");
-			// 2번 데이터베이스 값이 있는 select 해서 확인
-			// 생략
-			Users user = Users.builder().id(1).username(username).build();
-			// 3번
-			HttpSession session = request.getSession();
-			// session에는 사용자 패스워드는 절대 넣지 않는다!
-			session.setAttribute("sessionUser", user);
-			// 모든 응답에는 jSessionId가 쿠키로 추가된다.
-
-			// 4번 index.jsp페이지로 이동
-			response.sendRedirect("index.jsp");
+			usersService.로그인(request, response);
+		} else if (gubun.equals("updateProc")) {
+			usersService.유저정보수정완료(request, response);
+		} else if (gubun.equals("deleteProc")) {
+			usersService.유저정보삭제(request, response);
 		}
 	}
 }

@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BoardController extends HttpServlet {
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		System.out.println("BoardController 실행됨");
 		doProcess(request, response);
 		String gubun = request.getParameter("gubun"); //
@@ -24,7 +25,7 @@ public class BoardController extends HttpServlet {
 		} else if (gubun.equals("updateOne")) {
 			response.sendRedirect("board/updateOne.jsp");
 		}
-		
+
 	}
 
 	// POST요청은 무조건 FORM태그를 만들어서 값넣고 버튼 클릭 = insert delete update (http1.0기준)
